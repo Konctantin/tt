@@ -26,6 +26,7 @@ using SharpAssembler.Core.Instructions;
 using NUnit.Framework;
 using System;
 using System.Text;
+using System.Linq;
 
 namespace SharpAssembler.Core.Tests.Instructions
 {
@@ -50,8 +51,7 @@ namespace SharpAssembler.Core.Tests.Instructions
 
 			Context.Address = 5;
 
-			var emittable = instr.Construct(Context);
-			Assert.IsNull(emittable);
+			Assert.IsEmpty(instr.Construct(Context).ToList());
 			Assert.AreEqual((Int128)8, Context.SymbolTable["test"].Address);
 		}
 	}

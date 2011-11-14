@@ -25,6 +25,7 @@
 using SharpAssembler.Core.Instructions;
 using NUnit.Framework;
 using System;
+using System.Linq;
 using System.Text;
 
 namespace SharpAssembler.Core.Tests.Instructions
@@ -48,7 +49,7 @@ namespace SharpAssembler.Core.Tests.Instructions
 			Assert.AreEqual(str, instr.Data);
 			Assert.AreEqual(encoding, instr.Encoding);
 
-			var emittable = instr.Construct(Context) as RawEmittable;
+			var emittable = instr.Construct(Context).First() as RawEmittable;
 			Assert.AreEqual(encoding.GetBytes(str), emittable.Content);
 		}
 	}

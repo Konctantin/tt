@@ -46,35 +46,39 @@ namespace SharpAssembler.Core.Symbols
 		/// <remarks>
 		/// The value of the <see cref="Identifier"/> property reflects the identifier of the associated object.
 		/// </remarks>
-		public Symbol(IIdentifiable association, SymbolType symbolType)
+		public Symbol(IAssociatable association, SymbolType symbolType)
+			: this(association, symbolType, null)
 		{
 			#region Contract
 			Contract.Requires<ArgumentNullException>(association != null);
 			Contract.Requires<InvalidEnumArgumentException>(Enum.IsDefined(typeof(SymbolType), symbolType));
 			#endregion
-
-			this.identifier = ((IIdentifiable)association).Identifier;
-			this.association = association;
-			this.symbolType = symbolType;
 		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Symbol"/> class.
 		/// </summary>
-		/// <param name="identifier">The identifier of the symbol.</param>
 		/// <param name="association">The object to which this symbol is associated.</param>
 		/// <param name="symbolType">The type of symbol.</param>
-		public Symbol(string identifier, IAssociatable association, SymbolType symbolType)
+		/// <param name="identifier">The identifier of the symbol; or <see langword="null"/>.</param>
+		/// <remarks>
+		/// When <paramref name="identifier"/> is <see langword="null"/> and <paramref name="association"/> is
+		/// an <see cref="IIdentifiable"/> object, the identifier is set to be the identifier of the
+		/// <paramref name="association"/> object.
+		/// </remarks>
+		public Symbol(IAssociatable association, SymbolType symbolType, string identifier)
 		{
 			#region Contract
-			Contract.Requires<ArgumentNullException>(identifier != null);
 			Contract.Requires<ArgumentNullException>(association != null);
 			Contract.Requires<InvalidEnumArgumentException>(Enum.IsDefined(typeof(SymbolType), symbolType));
 			#endregion
 
-			this.identifier = identifier;
+			if (identifier == null && association is IIdentifiable)
+				identifier = ((IIdentifiable)association).Identifier;
+
 			this.association = association;
 			this.symbolType = symbolType;
+			this.identifier = identifier;
 		}
 		#endregion
 
@@ -83,16 +87,10 @@ namespace SharpAssembler.Core.Symbols
 		/// <summary>
 		/// Gets the identifier of the symbol.
 		/// </summary>
-		/// <value>The identifier of the symbol.</value>
+		/// <value>The identifier of the symbol; or <see langword="null"/> when no identifier was specified.</value>
 		public string Identifier
 		{
-			get
-			{
-				#region Contract
-				Contract.Ensures(Contract.Result<string>() != null);
-				#endregion
-				return identifier;
-			}
+			get { return identifier; }
 		}
 
 		private IAssociatable association;
@@ -223,7 +221,10 @@ namespace SharpAssembler.Core.Symbols
 		/// </returns>
 		public override string ToString()
 		{
-			return String.Format(CultureInfo.InvariantCulture, "<Symbol id=\"{0}\">", identifier);
+			if (this.identifier != null)
+				return String.Format(CultureInfo.InvariantCulture, "<Symbol id=\"{0}\">", this.identifier);
+			else
+				return String.Format(CultureInfo.InvariantCulture, "<Symbol>");
 		}
 		#endregion
 
@@ -234,7 +235,6 @@ namespace SharpAssembler.Core.Symbols
 		[ContractInvariantMethod]
 		private void ObjectInvariant()
 		{
-			Contract.Invariant(this.identifier != null);
 			Contract.Invariant(this.association != null);
 			Contract.Invariant(Enum.IsDefined(typeof(SymbolType), this.symbolType));
 		}

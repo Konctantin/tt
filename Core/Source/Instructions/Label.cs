@@ -26,6 +26,7 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using SharpAssembler.Core.Symbols;
+using System.Collections.Generic;
 
 namespace SharpAssembler.Core.Instructions
 {
@@ -181,16 +182,15 @@ namespace SharpAssembler.Core.Instructions
 		/// Modifies the context and constructs an emittable representing this constructable.
 		/// </summary>
 		/// <param name="context">The mutable <see cref="Context"/> in which the emittable will be constructed.</param>
-		/// <returns>The constructed emittable; or <see langword="null"/> when no emittable results from this
-		/// constructable.</returns>
-		public override IEmittable Construct(Context context)
+		/// <returns>A list of constructed emittables; or an empty list.</returns>
+		public override IList<IEmittable> Construct(Context context)
 		{
 			associatedSymbol.Address = context.Address;
 			associatedSymbol.DefiningSection = context.Section;
 			associatedSymbol.DefiningFile = context.Section.Parent;
 			context.SymbolTable.Add(associatedSymbol);
 
-			return null;
+			return new IEmittable[0];
 		}
 		#endregion
 

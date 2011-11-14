@@ -23,6 +23,7 @@
  */
 #endregion
 using SharpAssembler.Core.Instructions;
+using System.Linq;
 using NUnit.Framework;
 
 namespace SharpAssembler.Core.Tests.Instructions
@@ -45,7 +46,7 @@ namespace SharpAssembler.Core.Tests.Instructions
 
 			Context.Address = 1;
 
-			var emittable = instr.Construct(Context) as RawEmittable;
+			var emittable = instr.Construct(Context).First() as RawEmittable;
 			Assert.AreEqual(new byte[]{0x00, 0x00, 0x00}, emittable.Content);
 
 #if OPERAND_SET
@@ -66,7 +67,7 @@ namespace SharpAssembler.Core.Tests.Instructions
 			Assert.AreEqual(8, instr.Boundary);
 
 			Context.Address = 5;
-			var emittable = instr.Construct(Context) as RawEmittable;
+			var emittable = instr.Construct(Context).First() as RawEmittable;
 			Assert.AreEqual(new byte[] { 0xAB, 0xAB, 0xAB }, emittable.Content);
 
 #if OPERAND_SET

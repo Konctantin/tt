@@ -24,6 +24,7 @@
 #endregion
 using SharpAssembler.Core.Instructions;
 using NUnit.Framework;
+using System.Linq;
 
 namespace SharpAssembler.Core.Tests.Instructions
 {
@@ -48,7 +49,7 @@ namespace SharpAssembler.Core.Tests.Instructions
 #endif
 
 			// The 'instruction' has no representation.
-			Assert.IsNull(instr.Construct(this.Context));
+			Assert.IsEmpty(instr.Construct(this.Context).ToList());
 		}
 	}
 }

@@ -94,9 +94,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblerException.cs" />
+    <Compile Include="Collections\ConstructableList.cs" />
     <Compile Include="Constructable.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="Extra\BinaryWriterExtensions.cs" />
+    <Compile Include="Instructions\Group.cs" />
     <Compile Include="Instructions\Define.cs" />
     <Compile Include="Instructions\DeclareString.cs" />
     <Compile Include="Int128.cs" />
@@ -134,6 +136,7 @@
     <Compile Include="Symbols\SymbolType.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Changes.txt" />
     <Content Include="Copyright.txt" />
     <Content Include="License.txt" />
   </ItemGroup>

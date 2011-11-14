@@ -32,7 +32,10 @@ namespace SharpAssembler.Core.Symbols
 	/// <summary>
 	/// The symbol table. Symbols can be retrieved by name, and are enumerated by virtual address.
 	/// </summary>
-	public class SymbolTable : KeyedCollection<String, Symbol>
+	/// <remarks>
+	/// It is possible for a symbol to have no name, and for two symbols to have the same name.
+	/// </remarks>
+	public class SymbolTable : Collection<Symbol>
 	{
 		#region Constructors
 		/// <summary>
@@ -74,38 +77,103 @@ namespace SharpAssembler.Core.Symbols
 		}
 
 		/// <summary>
-		/// Extracts the key from the specified element.
+		/// Inserts an element into the <see cref="ConstructableList"/> at the specified index.
 		/// </summary>
-		/// <param name="item">The element from which to extract the key.</param>
-		/// <returns>The key for the specified element.</returns>
-		protected override String GetKeyForItem(Symbol item)
+		/// <param name="index">The zero-based index at which
+		/// <paramref name="item"/> should be inserted.</param>
+		/// <param name="item">The object to insert.</param>
+		protected sealed override void InsertItem(int index, Symbol item)
 		{
-			return item.Identifier;
+			#region Contract
+			// CONTRACT: Collection<T>
+			if (item == null)
+				throw new ArgumentNullException("item");
+			#endregion
+
+			base.InsertItem(index, item);
 		}
 
 		/// <summary>
-		/// Gets the value associated with the specified key.
+		/// Replaces the element at the specified index.
 		/// </summary>
-		/// <param name="key">The key of the value to get.</param>
-		/// <param name="value">When this method returns, contains the value associated with the specified key, if the
-		/// key is found; otherwise, the default value for the type of the value parameter.</param>
-		/// <returns><see langword="true"/> if the <see cref="SymbolTable"/> contains an element with the specified
-		/// key; otherwise, <see langword="false"/>.</returns>
-		public bool TryGetValue(string key, out Symbol value)
+		/// <param name="index">The zero-based index of the element to replace.</param>
+		/// <param name="item">The new value for the element at the specified index.</param>
+		protected sealed override void SetItem(int index, Symbol item)
 		{
 			#region Contract
-			Contract.Requires<ArgumentNullException>(key != null);
+			// CONTRACT: Collection<T>
+			if (item == null)
+				throw new ArgumentNullException("item");
 			#endregion
 
-			if (this.Contains(key))
+			base.SetItem(index, item);
+		}
+
+		/// <summary>
+		/// Checks whether the collection contains a <see cref="Symbol"/> with a particular identifier.
+		/// </summary>
+		/// <param name="identifier">The identifier to look for.</param>
+		/// <returns><see langword="true"/> when the collection has a symbol with the specified identifier;
+		/// otherwise, <see langword="false"/>.</returns>
+		/// <remarks>
+		/// Symbols that have no identifier (their <see cref="Symbol.Identifier"/> is <see langword="null"/>)
+		/// cannot be located using this method.
+		/// </remarks>
+		public bool Contains(string identifier)
+		{
+			#region Contract
+			Contract.Requires<ArgumentNullException>(identifier != null);
+			#endregion
+			
+			return IndexOf(identifier) != -1;
+		}
+
+		/// <summary>
+		/// Returns the index of the first symbol with the specified identifier.
+		/// </summary>
+		/// <param name="identifier">The identifier to look for.</param>
+		/// <returns>The zero-based index of the symbol in this table;
+		/// or -1 when no symbol with the specified identifier was found.</returns>
+		/// <remarks>
+		/// Symbols that have no identifier (their <see cref="Symbol.Identifier"/> is <see langword="null"/>)
+		/// cannot be located using this method.
+		/// </remarks>
+		public int IndexOf(string identifier)
+		{
+			#region Contract
+			Contract.Requires<ArgumentNullException>(identifier != null);
+			#endregion
+
+			for (int i = 0; i < this.Count; i++)
 			{
-				value = this[key];
-				return true;
+				if (this[i].Identifier == identifier)
+					return i;
 			}
-			else
+			return -1;
+		}
+
+		/// <summary>
+		/// Gets the first symbol with the specified identifier.
+		/// </summary>
+		/// <param name="identifier">The identifier to look for.</param>
+		/// <returns>The <see cref="Symbol"/> with the specified identifier;
+		/// or <see langword="null"/> when not found.</returns>
+		/// <remarks>
+		/// Symbols that have no identifier (their <see cref="Symbol.Identifier"/> is <see langword="null"/>)
+		/// cannot be located using this method.
+		/// </remarks>
+		public Symbol this[string identifier]
+		{
+			get
 			{
-				value = default(Symbol);
-				return false;
+				#region Contract
+				Contract.Requires<ArgumentNullException>(identifier != null);
+				#endregion
+				
+				int index = IndexOf(identifier);
+				if (index < 0)
+					return null;
+				return this[index];
 			}
 		}
 	}

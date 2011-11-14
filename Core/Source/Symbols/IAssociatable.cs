@@ -27,7 +27,7 @@ using System.Diagnostics.Contracts;
 namespace SharpAssembler.Core.Symbols
 {
 	/// <summary>
-	/// An interface for classes and structures which have a <see cref="Symbol"/> associated.
+	/// An interface for classes and structures that have a location in memory.
 	/// </summary>
 	[ContractClass(typeof(Contracts.IAssociatableContract))]
 	public interface IAssociatable

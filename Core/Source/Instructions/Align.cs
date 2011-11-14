@@ -24,6 +24,7 @@
 #endregion
 using System;
 using System.Diagnostics.Contracts;
+using System.Collections.Generic;
 
 namespace SharpAssembler.Core.Instructions
 {
@@ -139,13 +140,12 @@ namespace SharpAssembler.Core.Instructions
 		/// Modifies the context and constructs an emittable representing this constructable.
 		/// </summary>
 		/// <param name="context">The mutable <see cref="Context"/> in which the emittable will be constructed.</param>
-		/// <returns>The constructed emittable; or <see langword="null"/> when no emittable results from this
-		/// constructable.</returns>
-		public override IEmittable Construct(Context context)
+		/// <returns>A list of constructed emittables; or an empty list.</returns>
+		public override IList<IEmittable> Construct(Context context)
 		{
 			int padding = (int)context.Address.GetPadding(this.boundary);
 
-			return new RawEmittable(GeneratePadding(context, padding));
+			return new IEmittable[]{ new RawEmittable(GeneratePadding(context, padding)) };
 		}
 		#endregion
 

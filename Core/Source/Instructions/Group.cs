@@ -23,55 +23,51 @@
  */
 #endregion
 using System;
-using System.Diagnostics.Contracts;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics.Contracts;
+using SharpAssembler.Core.Collections;
 
 namespace SharpAssembler.Core.Instructions
 {
 	/// <summary>
-	/// A comment.
+	/// A group of constructables.
 	/// </summary>
-	public class Comment : Constructable
+	public class Group : Constructable
 	{
 		#region Constructors
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Comment"/> class with the specified comment text.
+		/// Initializes a new instance of the <see cref="Group"/> class.
 		/// </summary>
-		/// <param name="text">The text in the comment.</param>
-		public Comment(string text)
+		public Group()
+			: this(new ConstructableList())
+		{
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Group"/> class with the specified list
+		/// of <see cref="Constructable"/> objects.
+		/// </summary>
+		/// <param name="constructables">The list to use.</param>
+		protected Group(IList<Constructable> constructables)
 		{
 			#region Contract
-			Contract.Requires<ArgumentNullException>(text != null);
+			Contract.Requires<ArgumentNullException>(constructables != null);
 			#endregion
 
-			this.text = text;
+			this.constructables = constructables;
 		}
 		#endregion
 
 		#region Properties
-		private string text;
+		private IList<Constructable> constructables;
 		/// <summary>
-		/// Gets or sets the text of the comment.
+		/// Gets an ordered list of <see cref="Constructable"/> objects in this group.
 		/// </summary>
-		/// <value>The text of the comment.</value>
-		public string Text
+		/// <value>A <see cref="Collection{T}"/> of <see cref="Constructable"/> objects.</value>
+		public IList<Constructable> Constructables
 		{
-			get
-			{
-				#region Contract
-				Contract.Ensures(Contract.Result<string>() != null);
-				#endregion
-				return text;
-			}
-#if OPERAND_SET
-			set
-			{
-				#region Contract
-				Contract.Requires<ArgumentNullException>(value != null);
-				#endregion
-				text = value;
-			}
-#endif
+			get { return constructables; }
 		}
 		#endregion
 
@@ -83,8 +79,12 @@ namespace SharpAssembler.Core.Instructions
 		/// <returns>A list of constructed emittables; or an empty list.</returns>
 		public override IList<IEmittable> Construct(Context context)
 		{
-			// Comments are not represented in the resulting binary file.
-			return new IEmittable[0];
+			List<IEmittable> emittables = new List<IEmittable>();
+			foreach (Constructable constructable in this.constructables)
+			{
+				emittables.AddRange(constructable.Construct(context));
+			}
+			return emittables;
 		}
 		#endregion
 
@@ -95,7 +95,7 @@ namespace SharpAssembler.Core.Instructions
 		[ContractInvariantMethod]
 		private void ObjectInvariant()
 		{
-			Contract.Invariant(this.text != null);
+			Contract.Invariant(this.constructables != null);
 		}
 		#endregion
 	}

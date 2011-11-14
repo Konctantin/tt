@@ -25,6 +25,7 @@
 using SharpAssembler.Core.Instructions;
 using NUnit.Framework;
 using System;
+using System.Linq;
 using System.Text;
 
 namespace SharpAssembler.Core.Tests.Instructions
@@ -44,8 +45,7 @@ namespace SharpAssembler.Core.Tests.Instructions
 			var instr = new Extern("test");
 			Assert.AreEqual("test", instr.Identifier);
 
-			var emittable = instr.Construct(Context);
-			Assert.IsNull(emittable);
+			Assert.IsEmpty(instr.Construct(Context).ToList());
 			Assert.IsTrue(Context.SymbolTable["test"].IsExtern);
 		}
 	}

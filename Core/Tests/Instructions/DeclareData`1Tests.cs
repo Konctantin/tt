@@ -25,6 +25,7 @@
 using SharpAssembler.Core.Instructions;
 using NUnit.Framework;
 using System;
+using System.Linq;
 
 namespace SharpAssembler.Core.Tests.Instructions
 {
@@ -44,7 +45,7 @@ namespace SharpAssembler.Core.Tests.Instructions
 			Assert.AreEqual(new ushort[]{0xABCD, 0xEF01}, instr.Data);
 
 
-			var emittable = instr.Construct(Context) as RawEmittable;
+			var emittable = instr.Construct(Context).First() as RawEmittable;
 			Assert.AreEqual(new byte[]{0xCD, 0xAB, 0x01, 0xEF}, emittable.Content);
 		}
 	}

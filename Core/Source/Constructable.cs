@@ -26,6 +26,7 @@ using System;
 using System.Collections;
 using System.Diagnostics.Contracts;
 using SharpAssembler.Core.Instructions;
+using System.Collections.Generic;
 
 namespace SharpAssembler.Core
 {
@@ -83,9 +84,8 @@ namespace SharpAssembler.Core
 		/// Modifies the context and constructs an emittable representing this constructable.
 		/// </summary>
 		/// <param name="context">The mutable <see cref="Context"/> in which the emittable will be constructed.</param>
-		/// <returns>The constructed emittable; or <see langword="null"/> when no emittable results from this
-		/// constructable.</returns>
-		public abstract IEmittable Construct(Context context);
+		/// <returns>A list of constructed emittables; or an empty list.</returns>
+		public abstract IList<IEmittable> Construct(Context context);
 
 		/// <summary>
 		/// Accepts the specified visitor.
@@ -98,6 +98,7 @@ namespace SharpAssembler.Core
 		#endregion
 
 		#region Hierarchy
+#if false
 		private Section parent;
 		/// <summary>
 		/// Gets the <see cref="Section"/> in which this constructable is declared.
@@ -109,6 +110,7 @@ namespace SharpAssembler.Core
 			get { return parent; }
 			internal set { parent = value; }
 		}
+#endif
 		#endregion
 
 		#region Invariant
@@ -132,12 +134,14 @@ namespace SharpAssembler.Core
 		[ContractClassFor(typeof(Constructable))]
 		abstract class ConstructableContract : Constructable
 		{
-			public override IEmittable Construct(Context context)
+			public override IList<IEmittable> Construct(Context context)
 			{
 				Contract.Requires<ArgumentNullException>(context != null);
-				// May return null.
+				Contract.Ensures(Contract.Result<IList<IEmittable>>() != null);
+				Contract.Ensures(!Contract.Exists(Contract.Result<IList<IEmittable>>(), e => e == null),
+					"None of the elements in the returned list may be null.");
 
-				return default(IEmittable);
+				return default(IList<IEmittable>);
 			}
 		}
 	}

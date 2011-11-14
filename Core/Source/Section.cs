@@ -346,23 +346,23 @@ namespace SharpAssembler.Core
 
 			// When there are alignment constraints, align the virtual address.
 			if (Alignment > 1)
-				context.Address = context.Address.Align(Alignment);	// =  (ulong)Alignment + ((context.Address - 1) & ~((ulong)Alignment - 1));
+				context.Address = context.Address.Align(Alignment);
 
-			// Construct each emittable.
+			// Construct all emittables.
 			emittables = new List<IEmittable>(this.Count);
 			emittableLength = 0;
 			long length;
-			IEmittable emittable;
 			foreach (Constructable c in this)
 			{
-				emittable = c.Construct(context);
-				if (emittable == null) continue;
-
-				length = emittable.GetLength();
-				context.Address += length;
-				emittableLength += checked((int)length);
-				//context.SectionOffset += length;
-				emittables.Add(emittable);
+				var constructedEmittables = c.Construct(context);
+				foreach (IEmittable emittable in constructedEmittables)
+				{
+					length = emittable.GetLength();
+					context.Address += length;
+					emittableLength += checked((int)length);
+					//context.SectionOffset += length;
+					emittables.Add(emittable);
+				}
 			}
 
 			// Reset the current section.
@@ -471,6 +471,7 @@ namespace SharpAssembler.Core
 			get { return ((IAssociatable)parent).ParentFile; }
 		}
 
+#if false
 		/// <summary>
 		/// Removes all elements from the
 		/// <see cref="T:System.Collections.ObjectModel.Collection`1"/>.
@@ -483,6 +484,7 @@ namespace SharpAssembler.Core
 
 			base.ClearItems();
 		}
+#endif
 
 		/// <summary>
 		/// Inserts an element into the <see cref="T:System.Collections.ObjectModel.Collection`1"/>
@@ -499,12 +501,17 @@ namespace SharpAssembler.Core
 				throw new ArgumentNullException("item");
 			#endregion
 
+#if false
 			if (item.Parent != null)
 				item.Parent.Remove(item);
+#endif
 			base.InsertItem(index, item);
+#if false
 			item.Parent = this;
+#endif
 		}
 
+#if false
 		/// <summary>
 		/// Removes the element at the specified index of the
 		/// <see cref="T:System.Collections.ObjectModel.Collection`1"/>.
@@ -513,13 +520,13 @@ namespace SharpAssembler.Core
 		protected sealed override void RemoveItem(int index)
 		{
 			// CONTRACT: Collection<T>
-
 			Contract.Assume(index >= 0);
 			if (this[index].Parent == this)
 				this[index].Parent = null;
 
 			base.RemoveItem(index);
 		}
+#endif
 
 		/// <summary>
 		/// Replaces the element at the specified index.
@@ -534,13 +541,17 @@ namespace SharpAssembler.Core
 				throw new ArgumentNullException("item");
 			#endregion
 
+#if false
 			Contract.Assume(index >= 0);
 			if (this[index].Parent == this)
 				this[index].Parent = null;
 			if (item.Parent != null)
 				item.Parent.Remove(item);
+#endif
 			base.SetItem(index, item);
+#if false
 			item.Parent = this;
+#endif
 		}
 		#endregion
 

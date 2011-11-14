@@ -24,6 +24,7 @@
 #endregion
 using SharpAssembler.Core.Instructions;
 using NUnit.Framework;
+using System.Linq;
 using System;
 
 namespace SharpAssembler.Core.Tests.Instructions
@@ -49,7 +50,7 @@ namespace SharpAssembler.Core.Tests.Instructions
 			Int128 value = 0xDEADBEEF;
 			Context.Address = value;
 
-			var emittable = instr.Construct(Context) as ExpressionEmittable;
+			var emittable = instr.Construct(Context).First() as ExpressionEmittable;
 			Assert.AreEqual(value, emittable.Expression.Constant);
 			Assert.IsNull(emittable.Expression.Reference);
 			Assert.AreEqual(size, emittable.Size);

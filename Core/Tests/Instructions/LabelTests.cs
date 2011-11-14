@@ -26,6 +26,7 @@ using SharpAssembler.Core.Instructions;
 using NUnit.Framework;
 using System;
 using System.Text;
+using System.Linq;
 using SharpAssembler.Core.Symbols;
 
 namespace SharpAssembler.Core.Tests.Instructions
@@ -48,8 +49,7 @@ namespace SharpAssembler.Core.Tests.Instructions
 
 			Context.Address = 5;
 
-			var emittable = instr.Construct(Context);
-			Assert.IsNull(emittable);
+			Assert.IsEmpty(instr.Construct(Context).ToList());
 			Assert.AreEqual(SymbolType.Public, Context.SymbolTable["test"].SymbolType);
 			Assert.AreEqual((Int128)5, Context.SymbolTable["test"].Address);
 		}

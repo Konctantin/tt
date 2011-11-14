@@ -34,6 +34,24 @@ namespace SharpAssembler.Core.Symbols
 	{
 		#region Constructors
 		/// <summary>
+		/// Initializes a new instance of the <see cref="Reference"/> class that references an associatable object.
+		/// </summary>
+		/// <param name="associatable">The <see cref="IAssociatable"/> being referenced.</param>
+		/// <remarks>
+		/// When the <see cref="IAssociatable"/> changes its <see cref="IAssociatable.AssociatedSymbol"/>,
+		/// this reference is <em>not</em> updated or changed to reflect that, and will still be pointing at the
+		/// previous, obsolete symbol.
+		/// </remarks>
+		public Reference(IAssociatable associatable)
+		{
+			#region Contract
+			Contract.Requires<ArgumentNullException>(associatable != null);
+			#endregion
+
+			this.symbol = associatable.AssociatedSymbol;
+		}
+
+		/// <summary>
 		/// Initializes a new instance of the <see cref="Reference"/> class that references a symbol.
 		/// </summary>
 		/// <param name="symbol">The <see cref="Symbol"/> being referenced.</param>

@@ -98,7 +98,7 @@ namespace SharpAssembler.Core.Tests.Extra
 			Assert.AreEqual(32, MathExt.Align(27, 16));
 			Assert.AreEqual(32, MathExt.Align(31, 4));
 			Assert.AreEqual(32, MathExt.Align(32, 4));
-			Assert.AreEqual(34, MathExt.Align(33, 4));
+			Assert.AreEqual(36, MathExt.Align(33, 4));
 		}
 
 		/// <summary>

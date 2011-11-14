@@ -126,8 +126,8 @@ namespace SharpAssembler.x86
 		/// </summary>
 		/// <param name="context">The <see cref="Context"/> in which the emittable will be constructed, and which may
 		/// be modified.</param>
-		/// <returns>The constructed emittable.</returns>
-		public override IEmittable Construct(Context context)
+		/// <returns>A list of constructed emittables; or an empty list.</returns>
+		public override IList<IEmittable> Construct(Context context)
 		{
 			// CONTRACT: Constructable
 
@@ -151,7 +151,7 @@ namespace SharpAssembler.x86
 			// Construct the chosen variant.
 			EncodedInstruction instr = variant.Construct(context, GetOperands(), lockprefix);
 
-			return instr;
+			return new IEmittable[] { instr };
 		}
 
 		/// <summary>

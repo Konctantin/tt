@@ -97,9 +97,8 @@ namespace SharpAssembler.Core.Instructions
 		/// Modifies the context and constructs an emittable representing this constructable.
 		/// </summary>
 		/// <param name="context">The mutable <see cref="Context"/> in which the emittable will be constructed.</param>
-		/// <returns>The constructed emittable; or <see langword="null"/> when no emittable results from this
-		/// constructable.</returns>
-		public override IEmittable Construct(Context context)
+		/// <returns>A list of constructed emittables; or an empty list.</returns>
+		public override IList<IEmittable> Construct(Context context)
 		{
 			// CONTRACT: Constructable
 
@@ -118,7 +117,7 @@ namespace SharpAssembler.Core.Instructions
 				offset += CopyBytes(value, databytes, offset);
 			}
 
-			return new RawEmittable(databytes);
+			return new IEmittable[] { new RawEmittable(databytes) };
 		}
 
 		/// <summary>
